@@ -1,0 +1,19 @@
+# Router and firmware files: Xiaomi copyright, never committed
+/rootfs/
+/rootfs.partial/
+/build/
+/dev/.work/
+*.bin
+*.squashfs
+*.img
+*.tar
+
+# Downloaded at build time (xmir-patcher, no license declared)
+/base.en.po
+
+# Your own translations of Xiaomi's legal screens (see LEGAL.md)
+*.local.json
+
+__pycache__/
+*.pyc
+.playwright-mcp/
