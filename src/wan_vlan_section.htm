@@ -1,0 +1,26 @@
+        <!-- miwifi-panel-i18n: WAN VLAN (802.1Q) -->
+        <div class="mod-set mod-wanvlan">
+            <div class="hd">
+                <h3><%:WAN VLAN (802.1Q)%></h3>
+            </div>
+            <div class="bd">
+                <form action="#" class="form" name="wanvlan" id="wanvlan" autocomplete="off">
+                    <div class="item">
+                        <p><%:Some ISPs only work with tagged WAN traffic (e.g. Digi Spain: VLAN 20 + PPPoE). Set the PPPoE account above, then enable the tag here. The WAN reconnects after saving.%></p>
+                        <p id="wanvlanState"></p>
+                    </div>
+                    <div class="form-item">
+                        <label for="wanvlanEnable"><input type="checkbox" name="enable" id="wanvlanEnable" value="1"> <span><%:Tag WAN traffic with a VLAN ID%></span></label>
+                    </div>
+                    <div class="form-item">
+                        <label class="k"><%:VLAN ID%></label>
+                        <span class="v"><input type="text" name="vid" id="wanvlanVid" class="ipt-text" maxlength="4"></span>
+                        <em class="t"><%:1 to 4094, given by your ISP%></em>
+                    </div>
+                    <div class="form-contral">
+                        <button type="submit" class="btn btn-primary btn-l"><span><%:Save%></span></button>
+                        <span id="wanvlanMsg" style="margin-left:12px"></span>
+                    </div>
+                </form>
+            </div>
+        </div>

@@ -1,0 +1,58 @@
+<script>
+/* miwifi-panel-i18n: WAN VLAN (802.1Q) */
+(function () {
+    var urlGet = '<%=luci.dispatcher.build_url("api", "xqwanvlan", "get")%>',
+        urlSet = '<%=luci.dispatcher.build_url("api", "xqwanvlan", "set")%>',
+        $form = $('#wanvlan'), $en = $('#wanvlanEnable'), $vid = $('#wanvlanVid'),
+        $msg = $('#wanvlanMsg'), $state = $('#wanvlanState'),
+        T = {
+            readFail: '<%:Could not read the VLAN setting%>',
+            current: '<%:Current WAN%>',
+            port: '<%:port%>',
+            iface: '<%:interface%>',
+            noWan: '<%:No WAN port detected yet: plug the ISP cable into the router.%>',
+            needVid: '<%:Enter a VLAN ID (1-4094)%>',
+            saving: '<%:Saving...%>',
+            saved: '<%:Saved. Reconnecting WAN...%>',
+            badVid: '<%:The VLAN ID must be a number from 1 to 4094%>',
+            internalVid: '<%:This VLAN ID is used inside the router. Choose another one.%>',
+            error: '<%:Error%>',
+            failed: '<%:Request failed%>'
+        };
+
+    function sync() { $vid.prop('disabled', !$en.prop('checked')); }
+
+    function load() {
+        $.getJSON(urlGet, {}, function (rsp) {
+            if (!rsp || rsp.code !== 0) { $msg.text(T.readFail); return; }
+            $en.prop('checked', rsp.enable === 1);
+            $vid.val(rsp.vid || '');
+            $state.text(rsp.ifname ?
+                T.current + ': ' + (rsp.port ? T.port + ' ' + rsp.port + ', ' : '') +
+                T.iface + ' ' + rsp.ifname + (rsp.proto ? ', ' + rsp.proto : '') :
+                T.noWan);
+            sync();
+        });
+    }
+
+    $en.on('change', sync);
+    $form.on('submit', function (e) {
+        e.preventDefault();
+        var enable = $en.prop('checked') ? '1' : '0', vid = $.trim($vid.val());
+        if (enable === '1' && !/^\d{1,4}$/.test(vid)) { $msg.text(T.needVid); return; }
+        $msg.text(T.saving);
+        $.ajax({ url: urlSet, type: 'POST', dataType: 'json', data: { enable: enable, vid: vid },
+            success: function (rsp) {
+                if (rsp && rsp.code === 0) {
+                    $msg.text(T.saved);
+                    setTimeout(load, 8000);
+                } else {
+                    $msg.text(rsp && rsp.code === 2 ? T.badVid : rsp && rsp.code === 3 ? T.internalVid : T.error);
+                }
+            },
+            error: function () { $msg.text(T.failed); }
+        });
+    });
+    load();
+}());
+</script>
