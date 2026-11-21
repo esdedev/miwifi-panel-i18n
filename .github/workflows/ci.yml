@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.10", "3.14"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Unit tests
+        run: python -X utf8 -W error::ResourceWarning -m unittest discover -s tests -v
+      - name: Language files
+        run: python -X utf8 tools/lang.py check
+      - name: Shell syntax
+        if: runner.os == 'Linux'
+        run: |
+          for f in router/*.sh dev/*.sh dev/emulator/*.sh; do sh -n "$f"; done
+          sudo apt-get install -y -qq shellcheck >/dev/null
+          shellcheck -s sh -S warning router/*.sh dev/emulator/*.sh
