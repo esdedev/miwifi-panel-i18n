@@ -2,12 +2,17 @@
 
 **Your language in the web panel of Xiaomi routers on stock firmware, plus a WAN VLAN setting.**
 
+[![CI](https://github.com/esdedev/miwifi-panel-i18n/actions/workflows/ci.yml/badge.svg)](https://github.com/esdedev/miwifi-panel-i18n/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/esdedev/miwifi-panel-i18n)](https://github.com/esdedev/miwifi-panel-i18n/releases)
+[![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
+
 [Español](README.es.md)
 
 > [!IMPORTANT]
 > **You need root access to the router.** Installing (and removing) the pack requires root SSH
-> access, which the stock firmware does not give you. Getting root is up to you: this project does
-> not cover it, and doing it is at your own risk. Without root, this project cannot be installed.
+> access, which the stock firmware does not give you. This project does not include a way to get
+> it; [Getting root](#getting-root) links to a public community method, used at your own risk.
+> Without root, this project cannot be installed.
 
 ![The stock web panel before and after](docs/screenshots/before-after.png)
 
@@ -57,11 +62,28 @@ If you try it on another model or version, please open an issue saying how it we
 
 ## What you need
 
-- **Root SSH access** to the router. It is needed to install, to remove and to restore. This
-  project does not cover getting root. Once installed, the pack keeps working after reboots
-  without any further access.
+- **Root SSH access** to the router. It is needed to install, to remove and to restore. Once
+  installed, the pack keeps working after reboots without any further access. See
+  [Getting root](#getting-root).
 - A PC with **Python 3.10+** and the `ssh` command (built into Windows 10/11, macOS and Linux).
 - Optional: **Node.js**, to syntax-check every changed script during the build.
+
+### Getting root
+
+This project does not include a way to get root. This public community project does; read its
+instructions and warnings before using it, at your own risk:
+
+| Project | What it is | On the BE3600 2.5G (RD15) |
+|---|---|---|
+| [xiaomi-rp01-root](https://github.com/perrywey/xiaomi-rp01-root) | Short scripts for the BE3600 Pro (RP01, RP02) | Root was obtained this way on RD15 1.0.87, the router this project was tested on |
+
+Things to know before you start:
+
+- Root methods depend on the firmware version, and Xiaomi closes them in updates. **Do not update
+  the firmware** before you have root if your version has a known method.
+- **Xiaomi routers do not accept older firmware** (anti-rollback): once you update, you cannot go
+  back to a version where a method worked.
+- Rooting may void the warranty. Make a backup of the router's flash if the tool offers one.
 
 ## Install
 
