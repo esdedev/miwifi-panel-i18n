@@ -202,6 +202,34 @@ class UnitTest(unittest.TestCase):
             kept = [m.name for m in router.safe_members(tf)]
         self.assertEqual(kept, ["www/ok.js"])
 
+    def test_install_turns_auto_update_off_unless_kept(self):
+        with tempfile.TemporaryDirectory() as here:
+            pack = os.path.join(here, "build", "pack")
+            os.makedirs(pack)
+            open(os.path.join(pack, "manifest.txt"), "w").close()
+            with open(os.path.join(pack, "info.txt"), "w", encoding="utf-8") as fh:
+                fh.write("status: supported\n")
+            remotes = self._install_remotes(here)
+        self.assertNotIn("AUTO_UPDATE", remotes[0])
+        self.assertIn("AUTO_UPDATE=keep sh /tmp/panel_upload/install.sh", remotes[1])
+
+    @staticmethod
+    def _install_remotes(here):
+        from unittest import mock
+        remotes = []
+
+        def fake_run(cmd, input=None):
+            remotes.append(cmd[-1])
+            return subprocess.CompletedProcess(cmd, 0)
+
+        with mock.patch.object(router, "HERE", here), \
+             mock.patch.object(router, "pack_tar", lambda _: b""), \
+             mock.patch.object(router.subprocess, "run", fake_run), \
+             mock.patch("builtins.print"):
+            router.install("192.0.2.1", yes=True)
+            router.install("192.0.2.1", yes=True, keep_auto_update=True)
+        return remotes
+
     def test_lmo_roundtrip(self):
         with tempfile.TemporaryDirectory() as td:
             p = os.path.join(td, "t.lmo")

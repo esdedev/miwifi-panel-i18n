@@ -112,7 +112,14 @@ def pack_tar(pack):
     return buf.getvalue()
 
 
-def install(ip, yes):
+AUTO_UPDATE_WARNING = """Automatic firmware updates will be turned OFF on the router.
+If they stay on, Xiaomi can install a new firmware by itself at night: the pack stops working,
+root access may be lost, and the router cannot go back to the previous version
+(anti-rollback). `python router.py restore` turns them back on.
+"""
+
+
+def install(ip, yes, keep_auto_update=False):
     pack = os.path.join(HERE, "build", "pack")
     if not os.path.exists(os.path.join(pack, "manifest.txt")):
         sys.exit("error: no pack in build/pack. Run: python build.py")
@@ -123,9 +130,15 @@ def install(ip, yes):
               "applying and can be removed with `python router.py remove`.")
         if input("Install it anyway? [y/N] ").strip().lower() not in ("y", "yes", "s", "si", "sí"):
             sys.exit("Cancelled.")
+    if keep_auto_update:
+        print("WARNING: --keep-auto-update: automatic firmware updates stay on. An automatic update\n"
+              "can undo all of this: the pack stops, root access may be lost, and you cannot go back.")
+    else:
+        print(AUTO_UPDATE_WARNING)
     data = pack_tar(pack)
+    env = "AUTO_UPDATE=keep " if keep_auto_update else ""
     remote = ("rm -rf /tmp/panel_upload && mkdir -p /tmp/panel_upload && "
-              "tar -C /tmp/panel_upload -xf - && sh /tmp/panel_upload/install.sh")
+              f"tar -C /tmp/panel_upload -xf - && {env}sh /tmp/panel_upload/install.sh")
     print(f"Uploading {len(data) // 1024} KiB to {ip}...")
     rc = subprocess.run(ssh_cmd(ip, remote), input=data).returncode
     if rc != 0:
@@ -144,7 +157,10 @@ def status(ip):
               "echo; echo -n 'state: '; cat /tmp/panel_pack.state 2>/dev/null || echo 'not applied yet'; "
               "echo -n 'language: '; uci -q get luci.main.lang; "
               "echo -n 'WAN VLAN: '; [ \"$(uci -q get port_service.wan.wantag)\" = 1 ] && "
-              "uci -q get port_service.wantag_attr.vid || echo off")
+              "uci -q get port_service.wantag_attr.vid || echo off; "
+              "echo -n 'automatic firmware updates: '; "
+              "if grep -qs otapredownload /etc/crontabs/root && "
+              "[ \"$(uci -q get otapred.settings.auto)\" != 0 ]; then echo 'ON (see README)'; else echo off; fi")
     sys.exit(subprocess.run(ssh_cmd(ip, remote)).returncode)
 
 
@@ -155,10 +171,12 @@ def main():
     ap.add_argument("command", choices=["fetch", "install", "remove", "restore", "status"])
     ap.add_argument("ip", nargs="?", default="192.168.31.1")
     ap.add_argument("--yes", action="store_true", help="install: do not ask on experimental firmware")
+    ap.add_argument("--keep-auto-update", action="store_true",
+                    help="install: leave automatic firmware updates on (not recommended)")
     a = ap.parse_args()
     if not shutil.which("ssh"):
         sys.exit("error: the ssh command was not found")
-    {"fetch": lambda: fetch(a.ip), "install": lambda: install(a.ip, a.yes),
+    {"fetch": lambda: fetch(a.ip), "install": lambda: install(a.ip, a.yes, a.keep_auto_update),
      "remove": lambda: remove(a.ip), "restore": lambda: remove(a.ip, True), "status": lambda: status(a.ip)}[a.command]()
 
 
