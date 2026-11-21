@@ -1,0 +1,52 @@
+name: "Report: my ISP and the WAN VLAN"
+description: Tell us whether the WAN VLAN setting works with your Internet operator.
+labels: [isp-report]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks: these reports are how the operator table in the README gets confirmed.
+        Do not paste your PPPoE user name or password.
+  - type: input
+    id: isp
+    attributes:
+      label: Operator and country
+      placeholder: Digi, Spain
+    validations:
+      required: true
+  - type: input
+    id: vlan
+    attributes:
+      label: VLAN ID you used
+      placeholder: "20"
+    validations:
+      required: true
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection type
+      options: [PPPoE, DHCP, Static IP]
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Router model and firmware
+      placeholder: RD15, 1.0.87
+    validations:
+      required: true
+  - type: dropdown
+    id: result
+    attributes:
+      label: Result
+      options:
+        - Works (Internet over the tagged WAN)
+        - Connects but something does not work
+        - Does not connect
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything else, for example whether IPv6, TV or telephone work.

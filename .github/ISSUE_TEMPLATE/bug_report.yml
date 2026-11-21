@@ -1,0 +1,55 @@
+name: Something does not work
+description: The pack does not install, does not apply, or a page looks wrong.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not paste your router's serial number, MAC address, passwords or Wi-Fi names.
+  - type: input
+    id: model
+    attributes:
+      label: Router model
+      description: The code on the label under the router, for example RD15.
+      placeholder: RD15
+    validations:
+      required: true
+  - type: input
+    id: firmware
+    attributes:
+      label: Firmware version
+      description: Shown on the status page of the panel, for example 1.0.87.
+    validations:
+      required: true
+  - type: input
+    id: lang
+    attributes:
+      label: Language you built with
+      placeholder: es
+  - type: dropdown
+    id: step
+    attributes:
+      label: Where it failed
+      options:
+        - fetch
+        - build
+        - install
+        - after a reboot
+        - a page of the panel
+        - WAN VLAN setting
+        - remove / restore
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: The output of the failing command and of `python router.py status <router IP>`.
+      render: text

@@ -1,0 +1,26 @@
+name: New language
+description: You want to translate the panel into a language that is not available yet.
+labels: [translation]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        See [docs/translating.md](https://github.com/esdedev/miwifi-panel-i18n/blob/main/docs/translating.md)
+        for how to start. Opening this issue first avoids two people translating the same language.
+  - type: input
+    id: language
+    attributes:
+      label: Language
+      description: Its name in the language itself, and its code.
+      placeholder: Français (fr)
+    validations:
+      required: true
+  - type: dropdown
+    id: help
+    attributes:
+      label: How do you want to help?
+      options:
+        - I will translate it and open a pull request
+        - I can review someone else's translation
+    validations:
+      required: true
