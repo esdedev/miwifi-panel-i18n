@@ -120,6 +120,27 @@ detected, choose it by hand in *Settings → Network settings*.
 
 ![WAN VLAN section](docs/screenshots/wan-vlan-en.png)
 
+### Automatic firmware updates are turned off
+
+`install` turns off the router's automatic firmware updates. **If they stay on, you can lose
+everything:** every night between 3 and 5 the stock firmware asks Xiaomi for a new version and
+installs it by itself. After that:
+
+- the pack stops working (the panel goes back to Chinese and the VLAN setting is ignored);
+- root access may be lost;
+- you cannot go back to the previous version: Xiaomi routers refuse older firmware
+  (anti-rollback).
+
+`install` removes the cron line that runs the updater (`otapredownload`) and sets
+`otapred.settings.auto` and `otapred.settings.plugin` to 0. The cron line is what matters:
+Xiaomi can mark an update as mandatory, and the updater installs those even with `auto=0`.
+`status` shows whether automatic updates are on.
+
+- `restore` turns them back on, exactly as they were. A plain `remove` leaves them off.
+- `python router.py install --keep-auto-update` leaves them on. Not recommended.
+- You can still update by hand, but read [Getting root](#getting-root) first: after an update
+  you may not be able to install the pack again.
+
 ## Check, remove, restore
 
 ```sh
@@ -129,7 +150,8 @@ python router.py restore 192.168.31.1   # undo everything: the router is left as
 ```
 
 Before the first install, the router saves everything the pack is going to change: the panel
-language settings, the WAN VLAN settings and its crontab. `restore` puts those values back
+language settings, the WAN VLAN settings, the automatic update settings and its crontab.
+`restore` puts those values back
 exactly (and deletes the ones that did not exist), removes the pack's boot entry, deletes the
 pack and the backup, and reconnects the WAN if the VLAN setting changed. Reinstalling or
 upgrading the pack keeps the first backup, so `restore` always goes back to the state before

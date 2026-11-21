@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- `install` turns off automatic firmware updates, which would replace the firmware at night:
+  the pack would stop, root may be lost, and anti-rollback prevents going back.
+  `restore` turns them back on; `install --keep-auto-update` leaves them on; `status` shows them.
+- README: how to get root (links to public community methods), badges; issue templates.
+
 ## 0.1.0 (2026-11-21)
 
 First release.

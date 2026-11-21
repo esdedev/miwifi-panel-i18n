@@ -124,6 +124,27 @@ Si el puerto WAN no se detecta, elígelo a mano en *Ajustes → Ajustes de red*.
 
 ![Sección de VLAN de WAN](docs/screenshots/wan-vlan-es.png)
 
+### Las actualizaciones automáticas se apagan
+
+`install` apaga las actualizaciones automáticas del firmware. **Si se quedan encendidas, puedes
+perderlo todo:** cada noche, entre las 3 y las 5, el firmware original pregunta a Xiaomi si hay
+una versión nueva y la instala él solo. Después de eso:
+
+- el paquete deja de funcionar (el panel vuelve al chino y el ajuste de VLAN se ignora);
+- puedes perder el acceso root;
+- no puedes volver a la versión anterior: los routers Xiaomi rechazan un firmware más antiguo
+  (anti-rollback).
+
+`install` quita la línea de cron que lanza el actualizador (`otapredownload`) y pone
+`otapred.settings.auto` y `otapred.settings.plugin` a 0. Lo que cuenta es la línea de cron:
+Xiaomi puede marcar una actualización como obligatoria, y el actualizador la instala aunque
+`auto=0`. `status` muestra si están encendidas.
+
+- `restore` las vuelve a encender, tal como estaban. Un `remove` normal las deja apagadas.
+- `python router.py install --keep-auto-update` las deja encendidas. No se recomienda.
+- Puedes seguir actualizando a mano, pero lee antes [Conseguir root](#conseguir-root): después de
+  actualizar puede que no puedas volver a instalar el paquete.
+
 ## Comprobar, quitar, restaurar
 
 ```sh
@@ -133,7 +154,8 @@ python router.py restore 192.168.31.1   # lo deshace todo: el router queda como 
 ```
 
 Antes de la primera instalación, el router guarda todo lo que el paquete va a cambiar: los
-ajustes de idioma del panel, los de VLAN de la WAN y su crontab. `restore` vuelve a poner esos
+ajustes de idioma del panel, los de VLAN de la WAN, los de actualizaciones automáticas y su
+crontab. `restore` vuelve a poner esos
 valores tal cual (y borra los que no existían), quita la entrada de arranque, borra el paquete y
 la copia, y reconecta la WAN si el ajuste de VLAN cambió. Reinstalar o actualizar el paquete
 mantiene la primera copia, así que `restore` siempre vuelve al estado anterior a la primera

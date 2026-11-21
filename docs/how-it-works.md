@@ -140,8 +140,12 @@ may change, each holding the old value, or empty when the option did not exist:
 |---|---|
 | `luci.main.lang`, `luci.languages.en` | the install |
 | `port_service.wan.wantag`, `port_service.wantag_attr`, `port_service.wantag_attr.vid` | the WAN VLAN section |
+| `otapred.settings.auto`, `otapred.settings.plugin` | the install (automatic updates off) |
+| `cron.ota`: the crontab lines that run `otapredownload` | the install (automatic updates off) |
 
-It also keeps a copy of `/etc/crontabs/root` for reference, and writes `complete` last. A
+It also keeps a copy of `/etc/crontabs/root` for reference, and writes `complete` last. The
+automatic update files are saved whenever they are missing, so a backup made by version 0.1.0
+gets them from its crontab copy on the next install. A
 reinstall or an upgrade finds `complete` and keeps the first backup, so the backup always
 describes the router before the pack was ever installed.
 
@@ -154,9 +158,23 @@ untagged.
 
 `remove.sh restore` (`python router.py restore`) also:
 1. sets every saved value back, and deletes the ones that were empty (did not exist);
-2. removes the pack's cron line, and nothing else from the crontab;
+2. puts the `otapredownload` cron lines back if they were there, and removes the pack's cron
+   line; nothing else in the crontab changes;
 3. restarts `port_service wan` if the WAN tag differs from what it was;
 4. deletes `/data/panel` and `/data/panel_backup`.
+
+### Automatic updates
+
+Unless `AUTO_UPDATE=keep` (`router.py install --keep-auto-update`), `install.sh` deletes the
+`otapredownload` lines from the crontab and sets `otapred.settings.auto` and `plugin` to 0, after
+the pack is applied. The firmware's `otapredownload` ignores `otapred.settings.enabled`, and
+installs an update the server marks as mandatory even with `auto=0`, so the cron line is the
+switch that matters. A plain `remove.sh` leaves updates off; `remove.sh restore` and
+`remove.sh auto-update-on` put the saved values and cron lines back.
+
+Tested in the emulator: install (cron line gone, `auto=0`), plain remove (still off), reinstall
+with `AUTO_UPDATE=keep` (back to the factory state, with a warning), reinstall, `restore` (cron
+line back, `auto` and `plugin` deleted again as in the factory config); `status` shows each state.
 
 `router.py` opens one SSH session per command and moves files as a tar stream, so it needs no
 `scp`. `fetch` refuses to run while the pack is applied: it would copy the translated files instead
