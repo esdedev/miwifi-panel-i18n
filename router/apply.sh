@@ -13,6 +13,10 @@ MIRROR=/tmp/panel_mirror
 
 [ -f "$STATE" ] && exit 0
 [ -f "$P/enabled" ] && [ -f "$M" ] || exit 0
+# cron and install.sh may start it at the same moment
+mkdir /tmp/panel_pack.lock 2>/dev/null || exit 0
+trap 'rmdir /tmp/panel_pack.lock' EXIT
+[ -f "$STATE" ] && exit 0
 
 log() { logger -t panel_pack "$*"; echo "$*" > "$STATE"; }
 sum() { sha256sum "$1" 2>/dev/null | cut -d' ' -f1; }
