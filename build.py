@@ -131,7 +131,7 @@ def main():
         f"strings without translation: {missing}",
         f"inline script check: {js}",
     ]
-    with open(os.path.join(pack_out, "info.txt"), "w", newline="\n") as fh:
+    with open(os.path.join(pack_out, "info.txt"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(lines) + "\n")
     with open(os.path.join(pack_out, "language.txt"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write(lang_name + "\n")
