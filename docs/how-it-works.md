@@ -220,6 +220,7 @@ The emulator has no hardware, so it could not test whether a tagged WAN actually
 | `fetch`, `build --lang es`, `install` | 798 files fetched; 86 files applied; login page and panel in Spanish; language menu shows *Español*; backup in `/data/panel_backup` |
 | Reboot | applied again by cron, 99 s after boot |
 | WAN VLAN from the panel (VLAN 20) | `wantag=1`, `vid=20` saved. With a cable in the 2.5G port and the WAN port set to it, the router created `eth1.20` and used it for `wan` and `wan6`; DHCP discovers went out on it (no answer: the upstream router does not use VLAN 20) |
+| Digi fibre: the ONT on the WAN port, PPPoE with Digi's credentials, WAN VLAN 20 from the panel | the router connects; Internet works over the tagged WAN |
 | `remove` | login page in Chinese; 0 mounts; `luci.main.lang=zh_cn`; `luci.languages.en` deleted again; pack kept; VLAN setting kept |
 | `restore` | `uci show luci`, `uci show port_service` and the crontab identical to the snapshot taken before the install; `/data/panel`, `/data/panel_backup` and `eth1.20` gone |
 

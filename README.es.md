@@ -17,8 +17,9 @@
 ![El panel original antes y después](docs/screenshots/before-after.png)
 
 El firmware chino de Xiaomi solo viene en chino, y su panel no permite etiquetar el tráfico de la
-WAN con una VLAN. Algunos operadores lo necesitan: Digi en España, por ejemplo, usa PPPoE en la
-VLAN 20. Este paquete añade tres cosas al panel que ya tienes:
+WAN con una VLAN. Algunos operadores lo necesitan: Digi en España usa PPPoE en la VLAN 20, y este
+paquete está [probado con Digi](#probado-con-digi-españa). Añade tres cosas al panel que ya
+tienes:
 
 - **El panel en tu idioma**: los menús, todas las páginas de ajustes, los mensajes y las páginas
   nuevas hechas en JavaScript. Las traducciones son ficheros JSON sencillos que cualquiera puede
@@ -29,6 +30,22 @@ VLAN 20. Este paquete añade tres cosas al panel que ya tienes:
 
 No se escribe nada en el firmware. El paquete vive en `/data`, se aplica en cada arranque, y un
 solo comando deja el router exactamente como estaba antes.
+
+## Probado con Digi (España)
+
+La fibra de Digi necesita PPPoE en la VLAN 20, y el panel original no permite ponerla. Con el
+paquete, el Xiaomi funciona como router principal, conectado directamente a la caja de fibra de
+Digi (ONT):
+
+1. *Ajustes → Ajustes de red*: tipo de conexión PPPoE, con el usuario y la contraseña que te da
+   Digi. Guarda.
+2. *VLAN de WAN (802.1Q)*: marca *Etiquetar el tráfico WAN con un ID de VLAN*, escribe `20` y
+   guarda.
+
+Probado en un BE3600 2.5G (RD15) real con el firmware 1.0.87 en una línea de fibra de Digi: el
+router conecta e Internet funciona por la WAN etiquetada.
+
+Este proyecto no tiene relación con Digi ni con Xiaomi, ni cuenta con su respaldo o soporte.
 
 ## Idiomas
 
@@ -45,7 +62,7 @@ en inglés.
 
 | Firmware | Estado |
 |---|---|
-| Xiaomi BE3600 2.5G (RD15) 1.0.87 | **Probado en un router real**: instalación en español, reinicio, ajuste de VLAN de WAN, `remove` y `restore` |
+| Xiaomi BE3600 2.5G (RD15) 1.0.87 | **Probado en un router real**: instalación en español, reinicio, Internet por la fibra de Digi con el ajuste de VLAN de WAN (VLAN 20, PPPoE), `remove` y `restore` |
 
 Solo se ha probado este modelo y esta versión. En cualquier otro firmware, `install` muestra un
 aviso y pregunta antes de seguir.

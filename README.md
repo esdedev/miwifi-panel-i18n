@@ -17,8 +17,8 @@
 ![The stock web panel before and after](docs/screenshots/before-after.png)
 
 Xiaomi's China firmware only comes in Chinese, and its panel has no way to tag WAN traffic with a
-VLAN. Some ISPs need that tag: Digi in Spain, for example, needs PPPoE on VLAN 20. This pack adds
-three things to the panel you already have:
+VLAN. Some ISPs need that tag: Digi in Spain needs PPPoE on VLAN 20, and this pack has been
+[tested with it](#tested-with-digi-spain). It adds three things to the panel you already have:
 
 - **The panel in your language**: the menus, every settings page, the messages and the newer
   pages built in JavaScript. Translations are plain JSON files that anyone can improve or add
@@ -28,6 +28,20 @@ three things to the panel you already have:
 
 Nothing is written to the firmware. The pack lives in `/data`, is applied at each boot, and one
 command puts the router back exactly as it was before.
+
+## Tested with Digi (Spain)
+
+Digi's fibre needs PPPoE on VLAN 20, which the stock panel cannot set. With the pack, the Xiaomi
+works as the main router, plugged straight into Digi's fibre box (ONT):
+
+1. *Settings → Network settings*: connection type PPPoE, with the user name and password from
+   Digi. Save.
+2. *WAN VLAN (802.1Q)*: tick *Tag WAN traffic with a VLAN ID*, type `20` and save.
+
+Tested on a real BE3600 2.5G (RD15) with firmware 1.0.87 on a Digi fibre line: the router
+connects and Internet works over the tagged WAN.
+
+This project is not affiliated with, endorsed by or supported by Digi or Xiaomi.
 
 ## Languages
 
@@ -44,7 +58,7 @@ does not have yet is shown in English.
 
 | Firmware | State |
 |---|---|
-| Xiaomi BE3600 2.5G (RD15) 1.0.87 | **Tested on a real router**: install in Spanish, reboot, WAN VLAN setting, `remove` and `restore` |
+| Xiaomi BE3600 2.5G (RD15) 1.0.87 | **Tested on a real router**: install in Spanish, reboot, Internet over Digi fibre with the WAN VLAN setting (VLAN 20, PPPoE), `remove` and `restore` |
 
 Only this model and version has been tested. On any other firmware, `install` shows a warning
 and asks before going ahead.

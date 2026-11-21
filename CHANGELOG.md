@@ -5,7 +5,8 @@
 - `install` turns off automatic firmware updates, which would replace the firmware at night:
   the pack would stop, root may be lost, and anti-rollback prevents going back.
   `restore` turns them back on; `install --keep-auto-update` leaves them on; `status` shows them.
-- README: how to get root (links to public community methods), badges; issue templates.
+- Tested with Digi fibre (Spain): PPPoE on VLAN 20, Internet works over the tagged WAN.
+- README: how to get root (link to a public community method), badges; issue templates.
 
 ## 0.1.0 (2026-11-21)
 
