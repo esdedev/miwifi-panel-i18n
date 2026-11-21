@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 (2026-11-21)
 
 - `install` turns off automatic firmware updates, which would replace the firmware at night:
   the pack would stop, root may be lost, and anti-rollback prevents going back.
