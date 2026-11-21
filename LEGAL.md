@@ -40,6 +40,12 @@ here only to name the hardware and firmware this project works with.
 - Screenshots of the panel (`docs/screenshots/`), taken in the emulator with no device data, to
   show what the tools change.
 
+## Names of other companies
+
+Xiaomi, MiWiFi and Digi are trademarks of their owners. They are used only to describe
+compatibility. This project is not affiliated with, endorsed by or supported
+by any of them.
+
 ## Interoperability
 
 The firmware was studied on hardware owned by the author:
